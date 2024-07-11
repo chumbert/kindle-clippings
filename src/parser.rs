@@ -1,7 +1,9 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use regex::Regex;
+use wasm_bindgen::prelude::wasm_bindgen;
 
+#[wasm_bindgen]
 #[derive(Debug)]
 pub struct Entry {
     title: String,
@@ -13,6 +15,7 @@ pub struct Entry {
     content: Option<String>,
 }
 
+#[wasm_bindgen]
 pub enum ParsingError {
     MalformedLine,
 }
@@ -22,6 +25,7 @@ const ACTION_LINE_REGEX: Regex = Regex::new(
     r"^- Your (\w+) on page (\d+)? \| location ([\d-]+) \| Added on (.*)$"
 ).unwrap();
 
+#[wasm_bindgen]
 pub fn parse_clippings(reader: BufReader<File>) -> Result<Vec<Entry>, ParsingError> {
     let mut entries = Vec::new();
     let mut lines = reader.lines().map(|l| l.unwrap().trim().to_string()).peekable();
