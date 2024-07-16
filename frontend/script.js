@@ -1,28 +1,21 @@
+import { parse_clippings } from './pkg/kindle_clippings.js';
+
 document.getElementById('filterButton').addEventListener('click', filterHighlights);
 document.getElementById('exportButton').addEventListener('click', exportResults);
 
-let highlights = [];
 
-document.getElementById('fileInput').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            highlights = parseHighlights(e.target.result);
-            displayResults(highlights);
-        };
-        reader.readAsText(file);
-    }
-});
-
-function parseHighlights(content) {
-    // Parsing logic for the Kindle snippet file
-    // This is a placeholder function, adjust according to your file format
-    return content.split('\n').map(line => {
-        const [book, author, text] = line.split('|');
-        return { book, author, text };
-    });
-}
+// document.getElementById('fileInput').addEventListener('change', function(event) {
+//     const file = event.target.files[0];
+//     if (file) {
+//         const reader = new FileReader();
+//         reader.onload = function(e) {
+//             highlights = parse_clippings(e.target.result);
+//             displayResults(highlights);
+//             console.log(highlights);
+//         };
+//         reader.readAsText(file);
+//     }
+// });
 
 function filterHighlights() {
     const bookFilter = document.getElementById('bookFilter').value.toLowerCase();

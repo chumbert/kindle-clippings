@@ -25,7 +25,42 @@
             <div id="results"></div>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="script.js" type="module"></script>
+    <script type="module">
+        import * as wasm from './pkg/kindle_clippings.js';
+
+        wasm.default().then((module) => {
+            function displayResults(highlights) {
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = highlights.map(h => `
+        <div class="highlight">
+            <p><strong>Book:</strong> ${h.title}</p>
+            <p><strong>Author:</strong> ${h.author}</p>
+            <p>${h.content}</p>
+        </div>
+    `).join('');
+            }
+
+            let highlights = [
+                //new wasm.Entry("title", "author", "action", 1, "loc", "2020", "content")
+            ];
+
+            document.getElementById('fileInput').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        highlights = wasm.parse_clippings(e.target.result);
+                        displayResults(highlights);
+                        console.log(highlights);
+                    };
+                    reader.readAsText(file);
+                }
+            });
+        });
+
+    </script>
+
 </body>
 </html>
 
