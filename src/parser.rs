@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use lazy_static::lazy_static;
 use regex::Regex;
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -104,4 +105,32 @@ pub fn parse_clippings(content: &str) -> Vec<Entry> {
     }
 
     entries
+}
+
+pub struct Template {
+    tags: HashMap<String, Box<dyn Fn(&Entry) -> String>>,
+    template: String,
+}
+
+impl Template {
+    pub fn template(&self) -> String { self.template.clone() }
+
+    pub fn default() -> Template {
+        Template {
+            tags: HashMap::from([(
+                String::from("{author}"),
+                Box::from(|e: &Entry| e.author.clone()) as Box<dyn Fn(&Entry) -> String>
+            )]),
+            template: String::from("Author: {author}")
+        }
+    }
+
+    pub fn format(self, entry: Entry) -> String {
+        let mut result = self.template;
+        for(tag, extractor) in self.tags {
+            result = result.replace(tag.as_str(), extractor(&entry).as_str())
+        }
+
+        result
+    }
 }

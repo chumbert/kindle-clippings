@@ -1,11 +1,10 @@
 mod parser;
 mod utils;
-
 use std::fs::File;
 use std::io::{self, BufRead, BufReader};
 use std::env;
-use wasm_bindgen::JsValue;
 use wasm_bindgen::prelude::wasm_bindgen;
+use crate::parser::{Entry, Template};
 
 #[wasm_bindgen]
 extern "C" {
@@ -55,21 +54,7 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
-#[wasm_bindgen]
-pub fn parse_file_content(content: &str) -> Box<[JsValue]> {
-    let ret =parser::parse_clippings(content);
-
-    console_log!("{}", content);
-
-    let v = ret.iter()
-        .map(|x| serde_wasm_bindgen::to_value(x).unwrap())
-        .collect::<Vec<JsValue>>();
-
-    console_log!("{:?}", v);
-
-
-    ret.iter()
-        .map(|x| serde_wasm_bindgen::to_value(x).unwrap())
-        .collect::<Vec<JsValue>>()
-        .into_boxed_slice()
+#[wasm_bindgen(js_name="exportEntry")]
+pub fn export_entry(e: Entry) -> String {
+    Template::default().format(e)
 }
