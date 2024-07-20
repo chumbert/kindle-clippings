@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kindle Snippet Filter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>Kindle Snippet Filter</h1>
+            <input type="file" id="fileInput" accept=".txt">
+            <div id="filterSection">
+                <label for="titleFilter">Filter by Book:</label>
+                <input type="text" id="titleFilter" placeholder="Enter book title">
+                
+                <label for="authorFilter">Filter by Author:</label>
+                <input type="text" id="authorFilter" placeholder="Enter author name">
+            </div>
+            <button id="filterButton">Filter Highlights</button>
+            <button id="exportButton">Export Results</button>
+        </div>
+        <div class="content">
+            <div id="results"></div>
+        </div>
+    </div>
+    <script src="script.js" type="module"></script>
+    <script type="module">
+        import * as wasm from './pkg/kindle_clippings.js';
+        import { filterHighlights, displayResults } from './script.js';
+
+        let highlights = [];
+        let refreshLambda = () => {
+            displayResults(
+                filterHighlights(highlights)
+            );
+        }
+
+        wasm.default().then((module) => {
+            document.getElementById('fileInput').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        highlights = wasm.parse_clippings(e.target.result);
+                        displayResults(highlights);
+                    };
+                    reader.readAsText(file);
+                }
+            });
+
+            document.getElementById('authorFilter').addEventListener(
+                'change',
+                refreshLambda
+            )
+
+            document.getElementById('titleFilter').addEventListener(
+                'change',
+                refreshLambda
+            )
+
+            document.getElementById('filterButton').addEventListener(
+                'click',
+                refreshLambda
+            );
+
+            document.getElementById('exportButton').addEventListener(
+                'click',
+                () => {
+                    let exportHighlights = filterHighlights(highlights)
+
+                    const bookFilter = document.getElementById('titleFilter').value;
+                    const authorFilter = document.getElementById('authorFilter').value;
+
+                    const exportedContent = exportHighlights.map(
+                        h => wasm.exportEntry(h)
+                    ).join("\n");
+                    const blob = new Blob([exportedContent], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `highlights-${bookFilter || 'all'}-${authorFilter || 'all'}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }
+            );
+        });
+
+    </script>
+
+</body>
+</html>
+

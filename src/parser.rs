@@ -1,30 +1,63 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::collections::HashMap;
+use lazy_static::lazy_static;
 use regex::Regex;
+use wasm_bindgen::prelude::wasm_bindgen;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize)]
+#[wasm_bindgen]
 pub struct Entry {
     title: String,
     author: String,
     action: String,
-    page: Option<u32>,
+    pub page: Option<u32>,
     location: String,
     date: String,
     content: Option<String>,
 }
 
+#[wasm_bindgen(getter_with_clone)]
+impl Entry {
+    #[wasm_bindgen(constructor)]
+    pub fn new(title: String, author: String, action: String, page: Option<u32>, location: String, date: String, content: Option<String>) -> Entry {
+        Entry { title, author, action, page, location, date, content }
+    }
+    #[wasm_bindgen(getter)]
+    pub fn title(&self) -> String { self.title.clone() }
+
+    #[wasm_bindgen(getter)]
+    pub fn author(&self) -> String { self.author.clone() }
+
+    #[wasm_bindgen(getter)]
+    pub fn action(&self) -> String { self.action.clone() }
+
+    #[wasm_bindgen(getter)]
+    pub fn date(&self) -> String { self.date.clone() }
+
+    #[wasm_bindgen(getter)]
+    pub fn location(&self) -> String { self.location.clone() }
+
+    #[wasm_bindgen(getter)]
+    pub fn content(&self) -> Option<String> { self.content.clone() }
+}
+
+#[wasm_bindgen]
 pub enum ParsingError {
     MalformedLine,
 }
 
-const TITLE_AUTHOR_REGEX: Regex = Regex::new(r"^(.*) \((.*)\)$").unwrap();
-const ACTION_LINE_REGEX: Regex = Regex::new(
+lazy_static! {
+    static ref TITLE_AUTHOR_REGEX: Regex = Regex::new(r"^(.*) \((.*)\)$").unwrap();
+    static ref ACTION_LINE_REGEX: Regex = Regex::new(
     r"^- Your (\w+) on page (\d+)? \| location ([\d-]+) \| Added on (.*)$"
 ).unwrap();
 
-pub fn parse_clippings(reader: BufReader<File>) -> Result<Vec<Entry>, ParsingError> {
+}
+
+#[wasm_bindgen]
+pub fn parse_clippings(content: &str) -> Vec<Entry> {
     let mut entries = Vec::new();
-    let mut lines = reader.lines().map(|l| l.unwrap().trim().to_string()).peekable();
+    let mut lines = content.lines().map(|l| l.trim().to_string()).peekable();
 
     while lines.peek().is_some() {
         // Skip separator line
@@ -71,5 +104,33 @@ pub fn parse_clippings(reader: BufReader<File>) -> Result<Vec<Entry>, ParsingErr
         });
     }
 
-    Ok(entries)
+    entries
+}
+
+pub struct Template {
+    tags: HashMap<String, Box<dyn Fn(&Entry) -> String>>,
+    template: String,
+}
+
+impl Template {
+    pub fn template(&self) -> String { self.template.clone() }
+
+    pub fn default() -> Template {
+        Template {
+            tags: HashMap::from([(
+                String::from("{author}"),
+                Box::from(|e: &Entry| e.author.clone()) as Box<dyn Fn(&Entry) -> String>
+            )]),
+            template: String::from("Author: {author}")
+        }
+    }
+
+    pub fn format(self, entry: Entry) -> String {
+        let mut result = self.template;
+        for(tag, extractor) in self.tags {
+            result = result.replace(tag.as_str(), extractor(&entry).as_str())
+        }
+
+        result
+    }
 }
