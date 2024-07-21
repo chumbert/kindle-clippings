@@ -13,7 +13,20 @@ Just a plain boring tool that works when you need it.
  - [x] Bind DOM manipulation methods after module init using higher order functions
  - [x] Make sure filtering works
  - [x] Make basic exporter with Rust
- - [ ] Make parsing work with my own clipping file
+ - [x] Make parsing work with my own clipping file
  - [ ] Style the content div a bit
  - [ ] Have a look on mobile
  - [ ] Clean and publish ?
+
+## Build frontend
+
+```shell
+wasm-pack build --target web
+cp -r pkg frontend/
+```
+
+## Build and run cli
+
+```shell
+cargo run <clippings file>
+```
