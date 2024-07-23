@@ -18,13 +18,16 @@ export function filterHighlights(highlights) {
 export function displayResults(results) {
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = results
-        .map(h => `
-            <div class="highlight">
+        .map((h, index) => {
+            let color = (index % 2) === 0 ? 'white' : 'light-gray'
+            return `
+            <div class="highlight" style="background-color: ${color}">
                 <p><strong>Title:</strong> ${h.title}</p>
                 <p><strong>Author:</strong> ${h.author}</p>
                 <p>${h.content}</p>
             </div>
-        `)
+        `
+        })
         .join('');
 }
 
