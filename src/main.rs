@@ -1,19 +1,16 @@
-use std::{env, io};
+use std::{io};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use kindle_clippings::{export_entry, parse_clippings};
+use clap::{Parser};
+use kindle_clippings::{Entry, export_entry, parse_clippings};
+
+mod cli_args;
+use cli_args::Cli;
 
 fn main() -> io::Result<()> {
-    // Get the command line arguments
-    let args: Vec<String> = env::args().collect();
+    let args = Cli::parse();
 
-    if args.len() != 2 {
-        eprintln!("Usage: {} <file_path>", args[0]);
-        std::process::exit(1);
-    }
-
-    let file_path = &args[1];
-    let file = File::open(file_path)?;
+    let file = File::open(args.clippings_file)?;
     let reader = BufReader::new(file);
 
     let mut content = String::new();
@@ -23,7 +20,16 @@ fn main() -> io::Result<()> {
     }
 
     let entries = parse_clippings(&content);
-    for e in entries {
+    println!("auth: {}", args.author.is_some());
+    println!("title: {}", args.title.is_some());
+    println!("title: {}", args.title.clone().unwrap());
+
+    let filtered_entries: Vec<Entry> = entries.into_iter()
+        .filter(|e|e.author_contains(&(args.author.clone().unwrap_or("".to_string()))))
+        .filter(|e| e.title().contains(&(args.title.clone().unwrap_or("".to_string()))))
+        .collect()
+    ;
+    for e in filtered_entries {
         println!("{}", export_entry(e));
     }
 

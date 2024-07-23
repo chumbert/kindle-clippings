@@ -42,6 +42,13 @@ impl Entry {
 
     #[wasm_bindgen(getter)]
     pub fn content(&self) -> Option<String> { self.content.clone() }
+
+    pub fn author_contains(&self, sequence: &str) -> bool {
+        match self.author.clone() {
+            None => false,
+            Some(author) => author.contains(sequence)
+        }
+    }
 }
 
 #[wasm_bindgen]
@@ -63,7 +70,6 @@ pub fn parse_clippings(content: &str) -> Vec<Entry> {
     let mut lines = content.lines().map(|l| l.trim().to_string()).peekable();
 
     while lines.peek().is_some() {
-        println!("{}", lines.peek().unwrap());
         // Skip separator line
         while lines.peek().is_some() && lines.peek().unwrap().starts_with("==========") {
             lines.next();
@@ -74,8 +80,7 @@ pub fn parse_clippings(content: &str) -> Vec<Entry> {
         }
 
         let title_author_line = lines.next().unwrap();
-        println!("title: {}", title_author_line);
-        let caps = match(TITLE_AUTHOR_REGEX.captures(&title_author_line)) {
+        let caps = match TITLE_AUTHOR_REGEX.captures(&title_author_line) {
             Some(author_title_match) => { author_title_match }
             None => Regex::new("(?P<title>.*)").unwrap().captures(&title_author_line).unwrap()
 
@@ -84,8 +89,7 @@ pub fn parse_clippings(content: &str) -> Vec<Entry> {
         let author = caps.name("author").map_or_else(|| None, |x| Some(x.as_str().to_string()));
 
         let action_line = lines.next().unwrap();
-        println!("action: {}", action_line);
-        let caps = match(ACTION_LINE_REGEX.captures(&action_line)) {
+        let caps = match ACTION_LINE_REGEX.captures(&action_line) {
             Some(action_match) => { action_match }
             None => panic!("Can't parse action line: {}", action_line)
         };
@@ -129,15 +133,16 @@ pub fn parse_clippings(content: &str) -> Vec<Entry> {
     entries
 }
 
+type AttributeExtractor = Box<dyn Fn(&Entry) -> String>;
 pub struct Template {
-    tags: HashMap<String, Box<dyn Fn(&Entry) -> String>>,
+    tags: HashMap<String, AttributeExtractor>,
     template: String,
 }
 
 impl Template {
     pub fn template(&self) -> String { self.template.clone() }
 
-    pub fn default() -> Template {
+    pub fn debug_template() -> Template {
         Template {
             tags: HashMap::from([
                 (
@@ -173,5 +178,5 @@ impl Template {
 
 #[wasm_bindgen(js_name="exportEntry")]
 pub fn export_entry(e: Entry) -> String {
-    Template::default().format(e)
+    Template::debug_template().format(e)
 }
