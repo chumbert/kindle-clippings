@@ -162,7 +162,7 @@ impl Template {
                     Box::from(|e: &Entry| e.content.clone().unwrap_or("".to_string())) as Box<dyn Fn(&Entry) -> String>
                 ),
             ]),
-            template: String::from("[{action}] Author: {author}, Title: {title}\n{content}")
+            template: String::from("{content}\n\n*{author} - {title}*")
         }
     }
 
