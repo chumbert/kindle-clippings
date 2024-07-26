@@ -11,7 +11,7 @@ export function filterHighlights(highlights) {
 
     return highlights.filter(highlight =>
         (highlight.title.toLowerCase().includes(bookFilter)) &&
-        (highlight.author.toLowerCase().includes(authorFilter))
+        (highlight.author != null && highlight.author.toLowerCase().includes(authorFilter))
     );
 }
 
