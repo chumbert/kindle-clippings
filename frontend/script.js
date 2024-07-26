@@ -19,9 +19,9 @@ export function displayResults(results) {
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = results
         .map((h, index) => {
-            let color = (index % 2) === 0 ? 'white' : 'light-gray'
+            let color = (index % 2) === 0 ? 'AliceBlue' : 'LightGray'
             return `
-            <div class="highlight" style="background-color: ${color}">
+            <div class="highlight" style="padding: 2ch; background-color: ${color};">
                 <p><strong>Title:</strong> ${h.title}</p>
                 <p><strong>Author:</strong> ${h.author}</p>
                 <p>${h.content}</p>
