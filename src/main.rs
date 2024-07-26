@@ -20,9 +20,6 @@ fn main() -> io::Result<()> {
     }
 
     let entries = parse_clippings(&content);
-    println!("auth: {}", args.author.is_some());
-    println!("title: {}", args.title.is_some());
-    println!("title: {}", args.title.clone().unwrap());
 
     let filtered_entries: Vec<Entry> = entries.into_iter()
         .filter(|e|e.author_contains(&(args.author.clone().unwrap_or("".to_string()))))

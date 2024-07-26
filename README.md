@@ -17,7 +17,7 @@ Just a plain boring tool that works when you need it.
  - [x] Add CLI arguments for title and author filtering
  - [x] Make an export template for my own use
  - [x] Fix issue in UI where filter changes don't reset highlight list
- - [ ] Style the content div a bit
+ - [x] Style the content div a bit
  - [x] Have a look on mobile
  - [ ] Clean and publish ?
    - [ ] factor out stuff, rework quirky code
