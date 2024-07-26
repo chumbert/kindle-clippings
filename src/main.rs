@@ -31,6 +31,7 @@ fn main() -> io::Result<()> {
     ;
     for e in filtered_entries {
         println!("{}", export_entry(e));
+        println!("\n---\n");
     }
 
     Ok(())

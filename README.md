@@ -14,9 +14,20 @@ Just a plain boring tool that works when you need it.
  - [x] Make sure filtering works
  - [x] Make basic exporter with Rust
  - [x] Make parsing work with my own clipping file
+ - [x] Add CLI arguments for title and author filtering
+ - [x] Make an export template for my own use
+ - [ ] Fix issue in UI where filter changes don't reset highlight list
  - [ ] Style the content div a bit
- - [ ] Have a look on mobile
+ - [x] Have a look on mobile
  - [ ] Clean and publish ?
+   - [ ] factor out stuff, rework quirky code
+   - [ ] tests
+   - [ ] CI
+   - [ ] register A on clementhumbert.ch (kindle.clementhumbert.ch)
+   - [ ] publish on GitHub sites
+- [ ] Make export template configurable
+  - [ ] In CLI
+  - [ ] In web UI
 
 ## Build frontend
 
