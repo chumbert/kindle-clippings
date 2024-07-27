@@ -6,7 +6,7 @@ use std::io::{BufRead, BufReader};
 
 mod cli_args;
 use cli_args::Cli;
-use kindle_clippings::parsing::{Entry, parse_clippings};
+use kindle_clippings::parsing::{parse_clippings, Entry};
 
 fn main() -> io::Result<()> {
     let args = Cli::parse();

@@ -22,8 +22,9 @@ impl Template {
                 ),
                 (
                     String::from("{author}"),
-                    Box::from(|e: &Entry| e.author().clone().unwrap_or("Unknown author".to_string()))
-                        as Box<dyn Fn(&Entry) -> String>,
+                    Box::from(|e: &Entry| {
+                        e.author().clone().unwrap_or("Unknown author".to_string())
+                    }) as Box<dyn Fn(&Entry) -> String>,
                 ),
                 (
                     String::from("{title}"),

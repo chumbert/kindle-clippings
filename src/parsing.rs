@@ -1,7 +1,7 @@
 use lazy_static::lazy_static;
 use regex::Regex;
-use wasm_bindgen::prelude::wasm_bindgen;
 use serde::{Deserialize, Serialize};
+use wasm_bindgen::prelude::wasm_bindgen;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[wasm_bindgen]
@@ -93,6 +93,21 @@ lazy_static! {
 
 }
 
+/// Parses clipping file content
+///
+/// ```
+/// use kindle_clippings::parsing::parse_clippings;
+/// let content = "The Grapes of Wrath (John Steinbeck)\n- Your Highlight on page 12453252 | Added on Friday, 5 July 2024 09:55:52\nHow can we live without our lives ? How will we know it's us without our past ? No. Leave it. Burn it.\n";
+/// let parsed = parse_clippings(content);
+/// assert_eq!(1, parsed.len());
+/// let entry = parsed.get(0).unwrap();
+/// assert_eq!(Some("John Steinbeck".to_string()), entry.author());
+/// assert_eq!("The Grapes of Wrath".to_string(), entry.title());
+/// assert_eq!(Some("12453252".to_string()), entry.page());
+/// assert_eq!(Some("How can we live without our lives ? How will we know it's us without our past ? No. Leave it. Burn it.".to_string()), entry.content());
+/// assert_eq!("Friday, 5 July 2024 09:55:52".to_string(), entry.date());
+/// assert_eq!(None, entry.location());
+/// ```
 #[wasm_bindgen]
 pub fn parse_clippings(content: &str) -> Vec<Entry> {
     let mut entries = Vec::new();
