@@ -81,7 +81,7 @@
 
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `highlights-${bookFilter || 'all'}-${authorFilter || 'all'}.txt`;
+                    a.download = `highlights-${bookFilter || 'all'}-${authorFilter || 'all'}.md`;
                     a.click();
                     URL.revokeObjectURL(url);
                 }

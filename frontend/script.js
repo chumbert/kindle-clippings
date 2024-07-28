@@ -30,23 +30,3 @@ export function displayResults(results) {
         })
         .join('');
 }
-
-
-    export function exportResults() {
-    // Exporting logic for the results
-    // This is a placeholder function, adjust according to your needs
-    const bookFilter = document.getElementById('bookFilter').value;
-    const authorFilter = document.getElementById('authorFilter').value;
-    
-    const exportContent = highlights.map(
-        h => `${h.book}|${h.author}|${h.text}`).join('\n');
-    const blob = new Blob([exportContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `highlights-${bookFilter || 'all'}-${authorFilter || 'all'}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-}
-

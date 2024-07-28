@@ -1,0 +1,20 @@
+{
+  "name": "kindle-clippings",
+  "type": "module",
+  "description": "This is an over-engineered exporter for Kindle clipping files born out of my own need and an opportunity to productively procrastinate using Rust and WASM.",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chumbert/kindle-clippings"
+  },
+  "files": [
+    "kindle_clippings_bg.wasm",
+    "kindle_clippings.js",
+    "kindle_clippings.d.ts"
+  ],
+  "main": "kindle_clippings.js",
+  "types": "kindle_clippings.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

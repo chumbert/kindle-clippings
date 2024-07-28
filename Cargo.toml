@@ -2,6 +2,8 @@
 name = "kindle-clippings"
 version = "0.1.0"
 edition = "2021"
+description = "This is an over-engineered exporter for Kindle clipping files born out of my own need and an opportunity to productively procrastinate using Rust and WASM."
+repository = "https://github.com/chumbert/kindle-clippings"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
