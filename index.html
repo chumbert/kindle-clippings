@@ -75,7 +75,7 @@
 
                     const exportedContent = exportHighlights.map(
                         h => wasm.exportEntry(h)
-                    ).join("\n");
+                    ).join("\n---\n");
                     const blob = new Blob([exportedContent], { type: 'text/plain' });
                     const url = URL.createObjectURL(blob);
 
