@@ -20,9 +20,10 @@ Just a plain boring tool that works when you need it.
  - [x] Style the content div a bit
  - [x] Have a look on mobile
  - [ ] Clean and publish ?
-   - [ ] factor out stuff, rework quirky code
-   - [ ] tests
-   - [ ] CI
+   - [x] factor out stuff, rework quirky code
+   - [x] tests
+   - [x] CI tests
+   - [ ] CI deploy
    - [ ] register A on clementhumbert.ch (kindle.clementhumbert.ch)
    - [ ] publish on GitHub sites
 - [ ] Make export template configurable
