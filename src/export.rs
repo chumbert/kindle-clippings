@@ -13,7 +13,7 @@ impl Template {
         self.template.clone()
     }
 
-    pub fn debug_template() -> Template {
+    pub fn new() -> Template {
         Template {
             tags: HashMap::from([
                 (
@@ -52,5 +52,46 @@ impl Template {
 
 #[wasm_bindgen(js_name = "exportEntry")]
 pub fn export_entry(e: Entry) -> String {
-    Template::debug_template().format(e)
+    Template::new().format(e)
+}
+
+
+#[cfg(test)]
+mod test_export {
+    use super::*;
+    use crate::parsing::Entry;
+
+    #[test]
+    fn test_export() {
+        let entry = Entry::new(
+            "The Grapes of Wrath".to_string(),
+            Some("John Steinbeck".to_string()),
+            "Highlight".to_string(),
+            None,
+            None,
+            "Friday, 5 July 2024 09:55:52".to_string(),
+            Some("Small for convenience.".to_string()),
+        );
+
+        let exported = export_entry(entry);
+
+        assert_eq!("Small for convenience.\n\n*John Steinbeck - The Grapes of Wrath*".to_string(), exported);
+    }
+
+    #[test]
+    fn test_export_default_author_and_content() {
+        let entry = Entry::new(
+            "The Graves of Wraiths".to_string(),
+            None,
+            "Highlight".to_string(),
+            None,
+            None,
+            "Friday, 5 July 2024 09:55:52".to_string(),
+            None,
+        );
+
+        let exported = export_entry(entry);
+
+        assert_eq!("\n\n*Unknown author - The Graves of Wraiths*".to_string(), exported);
+    }
 }
